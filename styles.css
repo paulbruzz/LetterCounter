@@ -31,6 +31,7 @@ textarea, #non-editable-textbox {
 #non-editable-textbox {
     background-color: #e9e9e9;
     white-space: pre-wrap; /* Ensure spaces are preserved */
+    outline: none; /* Remove the outline for better styling */
 }
 
 #buttons-container {
