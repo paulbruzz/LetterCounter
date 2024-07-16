@@ -17,12 +17,20 @@ document.addEventListener('DOMContentLoaded', () => {
             if (letterCounts[letter] > 0) {
                 letterCounts[letter]--;
                 button.textContent = `${letter} (${letterCounts[letter]})`;
-                nonEditableTextbox.value += letter;
+                insertAtCaret(nonEditableTextbox, letter);
             }
         });
         buttonsContainer.appendChild(button);
         letterButtons[letter] = button;
     });
+
+    // Add space button
+    const spaceButton = document.createElement('button');
+    spaceButton.textContent = 'Space';
+    spaceButton.addEventListener('click', () => {
+        insertAtCaret(nonEditableTextbox, ' ');
+    });
+    buttonsContainer.appendChild(spaceButton);
 
     // Update character counts whenever the editable textbox changes
     editableTextbox.addEventListener('input', () => {
@@ -46,16 +54,44 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Delete last character from non-editable textbox
+    // Insert text at the caret position in a contenteditable div
+    function insertAtCaret(el, text) {
+        const selection = window.getSelection();
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(document.createTextNode(text));
+        range.collapse(false);
+
+        // Move caret to after the inserted text
+        selection.removeAllRanges();
+        selection.addRange(range);
+        el.focus();
+    }
+
+    // Delete character from non-editable textbox at the selected position
     deleteButton.addEventListener('click', () => {
-        const currentText = nonEditableTextbox.value;
-        if (currentText.length > 0) {
-            const lastChar = currentText[currentText.length - 1];
-            nonEditableTextbox.value = currentText.slice(0, -1);
-            if (alphabet.includes(lastChar)) {
-                letterCounts[lastChar]++;
-                updateButtons();
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            if (!range.collapsed) {
+                // Delete selected range
+                const selectedText = range.toString();
+                selectedText.split('').forEach(char => {
+                    if (alphabet.includes(char)) {
+                        letterCounts[char]++;
+                    }
+                });
+                range.deleteContents();
+            } else if (range.startOffset > 0) {
+                // Delete single character at the caret position
+                range.setStart(range.startContainer, range.startOffset - 1);
+                const charToDelete = range.toString();
+                range.deleteContents();
+                if (alphabet.includes(charToDelete)) {
+                    letterCounts[charToDelete]++;
+                }
             }
+            updateButtons();
         }
     });
 
