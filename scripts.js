@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (letterCounts[letter] > 0) {
                 letterCounts[letter]--;
                 button.textContent = `${letter} (${letterCounts[letter]})`;
+                updateButtonStyles();
                 insertAtCaret(nonEditableTextbox, letter);
             }
         });
@@ -46,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         updateButtons();
+        updateButtonStyles();
     }
 
     function updateButtons() {
@@ -92,8 +94,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             updateButtons();
+            updateButtonStyles();
         }
     });
+
+    // Calculate pastel green color based on count
+    function getGreenShade(count, maxCount) {
+        if (count === 0) return '#e0e0e0'; // Light grey for 0 occurrences
+        const ratio = count / maxCount;
+        const greenValue = Math.round(255 - (ratio * 155)); // Darker green as count increases
+        return `rgb(0, ${greenValue}, 0)`;
+    }
+
+    // Update button styles based on counts
+    function updateButtonStyles() {
+        const maxCount = Math.max(...Object.values(letterCounts));
+        Object.keys(letterButtons).forEach(letter => {
+            const count = letterCounts[letter];
+            const color = getGreenShade(count, maxCount);
+            letterButtons[letter].style.backgroundColor = color;
+            letterButtons[letter].style.color = count > maxCount / 2 ? 'white' : 'black';
+        });
+    }
 
     // Initial character count update in case of prefilled textarea
     updateCharacterCounts();

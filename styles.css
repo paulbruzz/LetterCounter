@@ -45,9 +45,11 @@ textarea, #non-editable-textbox {
 button {
     padding: 10px;
     font-size: 16px;
-    border: 1px solid black;
+    border: 1px solid black; /* Added border */
     border-radius: 5px;
     cursor: pointer;
+    background-color: #e0e0e0; /* Default light grey background */
+    color: black; /* Default text color */
 }
 
 button:hover {
