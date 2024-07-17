@@ -98,6 +98,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Make the non-editable textbox truly non-editable
+    nonEditableTextbox.addEventListener('keydown', (e) => {
+        e.preventDefault();
+    });
+
     // Calculate pastel green color based on count
     function getGreenShade(count, maxCount) {
         if (count === 0) return '#e0e0e0'; // Light grey for 0 occurrences
