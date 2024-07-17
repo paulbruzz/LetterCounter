@@ -58,16 +58,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Insert text at the caret position in a contenteditable div
     function insertAtCaret(el, text) {
+        el.focus();
         const selection = window.getSelection();
         const range = selection.getRangeAt(0);
         range.deleteContents();
-        range.insertNode(document.createTextNode(text));
-        range.collapse(false);
-
-        // Move caret to after the inserted text
+        const textNode = document.createTextNode(text);
+        range.insertNode(textNode);
+        range.setStartAfter(textNode);
+        range.setEndAfter(textNode);
         selection.removeAllRanges();
         selection.addRange(range);
-        el.focus();
     }
 
     // Delete character from non-editable textbox at the selected position
