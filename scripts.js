@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const button = document.createElement('button');
         button.textContent = `${letter} (0)`;
+        button.style.border = '1px solid black';
         button.addEventListener('click', () => {
             if (letterCounts[letter] > 0) {
                 letterCounts[letter]--;
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add space button
     const spaceButton = document.createElement('button');
     spaceButton.textContent = 'Space';
+    spaceButton.style.border = '1px solid black';
     spaceButton.addEventListener('click', () => {
         insertAtCaret(nonEditableTextbox, ' ');
     });
