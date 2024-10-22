@@ -115,14 +115,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update button styles based on counts
     function updateButtonStyles() {
-        const maxCount = Math.max(...Object.values(letterCounts));
-        Object.keys(letterButtons).forEach(letter => {
-            const count = letterCounts[letter];
-            const color = getGreenShade(count, maxCount);
-            letterButtons[letter].style.backgroundColor = color;
-            letterButtons[letter].style.color = count > maxCount / 2 ? 'white' : 'black';
-        });
-    }
+		const maxCount = Math.max(...Object.values(letterCounts), 1); // Ensure maxCount is at least 1
+		Object.keys(letterButtons).forEach(letter => {
+			const count = letterCounts[letter];
+			const color = getGreenShade(count, maxCount);
+			letterButtons[letter].style.backgroundColor = color;
+			letterButtons[letter].style.color = count > maxCount / 2 ? 'white' : 'black';
+		});
+	}
+
 
     // Initial character count update in case of prefilled textarea
     updateCharacterCounts();
