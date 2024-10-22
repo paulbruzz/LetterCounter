@@ -7,6 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const letterCounts = {};
     const letterButtons = {};
 
+    // Load saved texts from local storage if they exist
+    if (localStorage.getItem('originalText')) {
+        editableTextbox.value = localStorage.getItem('originalText');
+        updateCharacterCounts();  // Update counts for loaded text
+    }
+    if (localStorage.getItem('anagrammedText')) {
+        nonEditableTextbox.textContent = localStorage.getItem('anagrammedText');
+    }
+
     // Initialize alphabet buttons
     alphabet.split('').forEach(letter => {
         letterCounts[letter] = 0;
@@ -20,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.textContent = `${letter} (${letterCounts[letter]})`;
                 updateButtonStyles();
                 insertAtCaret(nonEditableTextbox, letter);
+                saveAnagrammedText();  // Save anagrammed text to local storage
             }
         });
         buttonsContainer.appendChild(button);
@@ -32,12 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
     spaceButton.style.border = '1px solid black';
     spaceButton.addEventListener('click', () => {
         insertAtCaret(nonEditableTextbox, ' ');
+        saveAnagrammedText();  // Save anagrammed text to local storage
     });
     buttonsContainer.appendChild(spaceButton);
 
     // Update character counts whenever the editable textbox changes
     editableTextbox.addEventListener('input', () => {
         updateCharacterCounts();
+        saveOriginalText();  // Save original text to local storage
     });
 
     function updateCharacterCounts() {
@@ -97,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             updateButtons();
             updateButtonStyles();
+            saveAnagrammedText();  // Save updated anagrammed text after deletion
         }
     });
 
@@ -115,15 +128,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update button styles based on counts
     function updateButtonStyles() {
-		const maxCount = Math.max(...Object.values(letterCounts), 1); // Ensure maxCount is at least 1
-		Object.keys(letterButtons).forEach(letter => {
-			const count = letterCounts[letter];
-			const color = getGreenShade(count, maxCount);
-			letterButtons[letter].style.backgroundColor = color;
-			letterButtons[letter].style.color = count > maxCount / 2 ? 'white' : 'black';
-		});
-	}
+        const maxCount = Math.max(...Object.values(letterCounts), 1); // Ensure maxCount is at least 1
+        Object.keys(letterButtons).forEach(letter => {
+            const count = letterCounts[letter];
+            const color = getGreenShade(count, maxCount);
+            letterButtons[letter].style.backgroundColor = color;
+            letterButtons[letter].style.color = count > maxCount / 2 ? 'white' : 'black';
+        });
+    }
 
+    // Save original text to local storage
+    function saveOriginalText() {
+        localStorage.setItem('originalText', editableTextbox.value);
+    }
+
+    // Save anagrammed text to local storage
+    function saveAnagrammedText() {
+        localStorage.setItem('anagrammedText', nonEditableTextbox.textContent);
+    }
 
     // Initial character count update in case of prefilled textarea
     updateCharacterCounts();
